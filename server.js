@@ -3,7 +3,7 @@
 // Importation du package HTTP 
 const http = require('http');
 
-// Importation de notre application
+// Importation de notre fichier app.js
 const app = require('./app');
 
 // La fonction normalizePort renvoie un port valide,

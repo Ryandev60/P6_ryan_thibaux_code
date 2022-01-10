@@ -5,14 +5,14 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 // Importation du model user
-const User = require("../models/user");
+const userModels = require("../models/user");
 
 // Inscription utilisateur
 exports.signup = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10)
     .then(hash => {
-      const user = new User({
+      const user = new userModels({
         email: req.body.email,
         password: hash,
       });
@@ -26,7 +26,7 @@ exports.signup = (req, res, next) => {
 
 // Connexion utilisateur
 exports.login = (req, res, next) => {
- User.findOne({email: req.body.email }) // On cherche si l'email rentré par l'utilisateur correspond à un email dans la DB
+  userModels.findOne({email: req.body.email }) // On cherche si l'email rentré par l'utilisateur correspond à un email dans la DB
  .then(user => {
   if (!user) { // Si on ne trouve pas d'utilisateur on renvoi une erreur
    return res.status(401).json({error: 'Utilisateur non trouvé !' });
@@ -40,7 +40,7 @@ exports.login = (req, res, next) => {
     userId: user._id, // userId sera égal a l'identifiant de l'utilisateur dans la DB
     token: jwt.sign( //
      { userId: user._id }, // Les données que l'on va encoder
-     'RANDOM_TOKEN_SECRET', // Clé secréte pour l'encodage
+     process.env.JWT_SECRET, // Clé secréte pour l'encodage
      {expiresIn: "24h" } // Durée de validité du token
     )
    });

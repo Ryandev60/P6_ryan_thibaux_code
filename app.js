@@ -16,10 +16,15 @@ const sauceRoutes = require("./routes/sauce");
 // Création de l'application express
 const app = express();
 
+// Cacher les données sensible
+
+const dotenv = require('dotenv').config();
+
 // Connexion à la base de données mongoDB
+
 mongoose
   .connect(
-    "mongodb+srv://Ryandev60:Chouky60440@cluster0.o8wxd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    `mongodb+srv://${process.env.APP_USERNAME}:${process.env.APP_PASSWORD}@cluster0.o8wxd.mongodb.net/${process.env.APP_NAME}?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))

@@ -1,11 +1,11 @@
 // Importation du model sauce
-const Sauce = require("../models/Sauce");
+const sauceModels = require("../models/sauce");
 const fs = require("fs");
 
 // Création de l'objet sauce
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce); // Analyse de sauce pour obtenir un objet utilisable
-  const sauce = new Sauce({
+  const sauce = new sauceModels ({
     // Création de l'objet
     ...sauceObject,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${ // Indiqué l'URL de l'images
@@ -19,7 +19,7 @@ exports.createSauce = (req, res, next) => {
 
 // Supression de l'objet sauce
 exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id }).then(
+  sauceModels.findOne({ _id: req.params.id }).then(
     (sauce) => {
       if (!sauce) {
         res.status(404).json({
@@ -31,7 +31,7 @@ exports.deleteSauce = (req, res, next) => {
           error: new Error('Requête non authorisé !')
         });
       }
-      Sauce.deleteOne({ _id: req.params.id }).then(
+      sauceModels.deleteOne({ _id: req.params.id }).then(
         () => {
           res.status(200).json({
             message: 'Objet supprimé !'
@@ -57,7 +57,7 @@ exports.modifySauce = (req, res, next) => {
           req.file.filename
         }`,
       } : { ...req.body }; // Sinon copie req.body
-  Sauce.updateOne( // Modification dans la DB
+      sauceModels.updateOne( // Modification dans la DB
     { _id: req.params.id }, 
     { ...sauceObject, _id: req.params.id }
   )
@@ -67,14 +67,14 @@ exports.modifySauce = (req, res, next) => {
 
 // Récupération  de l'objet sauce
 exports.getOneSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
+  sauceModels.findOne({ _id: req.params.id })
     .then((sauce) => res.status(200).json(sauce))
     .catch((error) => res.status(404).json({ error }));
 };
 
 // Récupération de tout les objets sauce
 exports.getAllSauce = (req, res, next) => {
-  Sauce.find()
+  sauceModels.find()
     .then((sauces) => res.status(200).json(sauces))
     .catch((error) => res.status(404).json({ error }));
 };
@@ -83,11 +83,11 @@ exports.getAllSauce = (req, res, next) => {
 exports.evaluateSauce = (req, res, next) => {
   // Si l'utilisateur n'a pas liker la sauce
   if (req.body.like === 0) {
-    Sauce.findOne({ _id: req.params.id }) // On va l'id de la sauce grâce à l'URL
+    sauceModels.findOne({ _id: req.params.id }) // On va l'id de la sauce grâce à l'URL
       .then((sauce) => {
         //Si l'utilisateur a déjà liker la sauce, on enlève le like et on l'enlève des usersLiked
         if (sauce.usersLiked.find((user) => user === req.body.userId)) {
-          Sauce.updateOne(
+          sauceModels.updateOne(
             { _id: req.params.id },
             {
               $inc: { likes: -1 }, // On décrémente de 1 les likes
@@ -103,7 +103,7 @@ exports.evaluateSauce = (req, res, next) => {
         }
         //Si l'utilisateur a déjà disliker la sauce, on enlève le dislike et on l'enlève des usersDisLiked
         if (sauce.usersDisliked.find((user) => user === req.body.userId)) {
-          Sauce.updateOne( // On va l'id de la sauce dans l'URL
+          sauceModels.updateOne( // On va l'id de la sauce dans l'URL
             { _id: req.params.id },
             {
               $inc: { dislikes: -1 },
@@ -124,7 +124,7 @@ exports.evaluateSauce = (req, res, next) => {
   }
   //Si l'utilisateur n'a pas déjà liker la sauce, on rajoute le like et on l'ajoute aux usersLiked
   if (req.body.like === 1) {
-    Sauce.updateOne(
+    sauceModels.updateOne(
       { _id: req.params.id }, // On va l'id de la sauce dans l'URL
       {
         $inc: { likes: 1 }, // On incrémente de 1 les likes
@@ -141,7 +141,7 @@ exports.evaluateSauce = (req, res, next) => {
   //Si l'utilisateur n'a pas déjà disliker la sauce, on rajoute le like et on l'ajoute aux usersdisLiked
   if (req.body.like === -1) {
     console.log(req.body.like);
-    Sauce.updateOne(
+    sauceModels.updateOne(
       { _id: req.params.id }, // On va l'id de la sauce dans l'URL
       {
         $inc: { dislikes: 1 }, // On incrémente le dislike de 1

@@ -17,7 +17,7 @@ const sauceSchema = mongoose.Schema({
 });
 
 // Exportation du model sauceSchema (Premier argument = nom du model), deuxième = model
-module.exports = mongoose.model('Sauce', sauceSchema)
+module.exports = mongoose.model('sauce', sauceSchema)
 
 /* Ici on importe le package mongoose pour que l'on puisse se servir de ses méthodes,
 puis nous créons notre model d'objet*/
