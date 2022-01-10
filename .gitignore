@@ -1,4 +1,4 @@
 node_modules/
 images/
-package-lock.json/
-.env/
+package-lock.json
+.env
